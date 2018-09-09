@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const router = express.Router();
-const port = 3000;
+const port = 5123;
 app.use('/push', router);
 
 
@@ -11,10 +11,9 @@ app.listen(port, () => console.log(`Listening on port ${port}`));
 const url = require('url');
 
 
-
 var admin = require('firebase-admin');
 
-var serviceAccount = require('C:/Users/dell/nodeProject/BpartherCredencial.json');
+var serviceAccount = require('/home/ubuntu/node/BpartherCredencial.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
@@ -22,7 +21,7 @@ admin.initializeApp({
 
 
 
-router.get('/buy', (request, response) => {
+router.get('/buy', (request, response1) => {
   var urlParts = url.parse(request.url, true);
   var parameters = urlParts.query;
   var registrationToken = parameters.token;
@@ -32,28 +31,33 @@ router.get('/buy', (request, response) => {
 
   var message = {
   notification: {
-    title: 'Se ha realizado una compra',
+    title: 'El negocio acepto tu compra',
     body:"Cantidad: " + price + " pesos " + "Ref: "+ref
   },
   token: registrationToken
 };
-var response;
+
 admin.messaging().send(message)
   .then((response) => {
 	  
     console.log('Successfully sent message:', response);
 	console.log('Key', registrationToken);
 	console.log('price',price);
+	response1.status(200).json({code: "200"}).end();
   })
   .catch((error) => {
     console.log('Error sending message:', error);
-	console.log('Successfully sent message:', registrationToken);
+	console.log('UnSuccessfully sent message:', registrationToken);
+	valida=0;
+	response1.status(442).json({code: "442"}).end();
   });
+  
+  
 });
 
 
 
-router.get('/sell', (request, response) => {
+router.get('/sell', (request, response1) => {
   var urlParts = url.parse(request.url, true);
   var parameters = urlParts.query;
   var registrationToken = parameters.token;
@@ -74,23 +78,25 @@ admin.messaging().send(message)
     console.log('Successfully sent message:', response);
 	console.log('Key', registrationToken);
 	console.log('price',price);
+	response1.status(200).json({code: "200"}).end();
   })
   .catch((error) => {
     console.log('Error sending message:', error);
-	console.log('Successfully sent message:', registrationToken);
+	console.log('UnSuccessfully sent message:', registrationToken);
+	response1.status(442).json({code: "442"}).end();
   });
 });
 
 
 
 
-router.get('/sellAccept', (request, response) => {
+router.get('/sellAccept', (request, response1) => {
   var urlParts = url.parse(request.url, true);
   var parameters = urlParts.query;
   var registrationToken = parameters.token;
   var price=parameters.price;
   var ref=parameters.ref;
-
+  
   var message = {
   notification: {
     title: '¿Aceptas la transaccion?',
@@ -105,9 +111,13 @@ admin.messaging().send(message)
     console.log('Successfully sent message:', response);
 	console.log('Key', registrationToken);
 	console.log('price',price);
+	response1.status(200).json({code: "200"}).end();
   })
   .catch((error) => {
     console.log('Error sending message:', error);
-	console.log('Successfully sent message:', registrationToken);
+	console.log('UnSuccessfully sent message:', registrationToken);
+	response1.status(442).json({code: "442"}).end();
   });
+
+
 });
