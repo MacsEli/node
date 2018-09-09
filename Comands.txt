@@ -1,0 +1,9 @@
+Commans
+curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+sudo apt-get install -y nodejs
+nodejs -v
+
+Copiar y posicionarse en el directorio del proyecto
+npm install express
+
+npm install firebase-admin --save
